@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Asset, Dividend, AssetType } from '../types';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend, AreaChart, Area, XAxis, YAxis, CartesianGrid, TooltipProps } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend, AreaChart, Area, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { DollarSign, TrendingUp, Wallet, PieChart as PieChartIcon, BarChart3, Calendar, Filter } from 'lucide-react';
 
 interface DashboardProps {
@@ -32,7 +32,7 @@ const formatPercent = (value: number) => {
 };
 
 // Custom Tooltip Component
-const CustomPieTooltip = ({ active, payload, total }: TooltipProps<number, string> & { total: number }) => {
+const CustomPieTooltip = ({ active, payload, total }: { active?: boolean; payload?: any[]; total: number }) => {
   if (active && payload && payload.length) {
     const data = payload[0];
     const value = data.value as number;

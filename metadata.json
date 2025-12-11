@@ -1,5 +1,5 @@
 {
-  "name": "Investi.AI",
-  "description": "Um painel de controle financeiro inteligente para rastrear Ações, FIIs, Tesouro e Cripto. Utilize IA para importar dados brutos de planilhas e analisar sua evolução patrimonial.",
+  "name": "Investi.Web",
+  "description": "Um painel de controle financeiro completo para rastrear Ações, FIIs, Tesouro e Cripto. Gerencie sua evolução patrimonial e dividendos localmente.",
   "requestFramePermissions": []
 }

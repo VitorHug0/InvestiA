@@ -8,7 +8,7 @@ import { AssetList } from './components/AssetList';
 import { Dividends } from './components/Dividends';
 import { History } from './components/History';
 import { fetchLatestPrices } from './services/marketService';
-import { LayoutDashboard, Wallet, BrainCircuit, FileInput, Menu, X, DollarSign, History as HistoryIcon } from 'lucide-react';
+import { LayoutDashboard, Wallet, BookOpen, FileInput, Menu, X, DollarSign, History as HistoryIcon } from 'lucide-react';
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
@@ -57,8 +57,8 @@ const Navigation = () => {
         <span className="font-medium">Importar</span>
       </Link>
       <Link to="/advisor" className={`flex items-center space-x-3 px-6 py-3 transition-all ${isActive('/advisor')}`}>
-        <BrainCircuit size={20} />
-        <span className="font-medium">Advisor AI</span>
+        <BookOpen size={20} />
+        <span className="font-medium">Educação</span>
       </Link>
     </nav>
   );
@@ -71,44 +71,14 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isUpdatingPrices, setIsUpdatingPrices] = useState(false);
 
-  // Import Handler (from Sheet/Image)
+  // Import Handler (Simple CSV)
   const handleImport = (
     newAssets: Partial<Asset>[], 
     newDividends: Partial<Dividend>[], 
     newTransactions: Partial<Transaction>[]
   ) => {
     
-    // 1. Process Transactions History
-    const processedTransactions = newTransactions.map(t => ({
-      id: generateId(),
-      ticker: t.ticker || 'UNKNOWN',
-      type: (t.type as TransactionType) || TransactionType.BUY,
-      quantity: t.quantity || 0,
-      price: t.price || 0,
-      total: (t.quantity || 0) * (t.price || 0),
-      date: t.date || new Date().toISOString().split('T')[0],
-      assetId: 'temp' // Will be linked conceptually by ticker
-    }));
-    
-    if (processedTransactions.length > 0) {
-        setTransactions(prev => [...prev, ...processedTransactions]);
-    }
-
-    // 2. Process Dividends
-    const processedDividends = newDividends.map(d => ({
-      id: generateId(),
-      ticker: d.ticker || 'UNKNOWN',
-      amount: d.amount || 0,
-      date: d.date || new Date().toISOString().split('T')[0],
-      description: d.description || 'Importado via Planilha'
-    }));
-    
-    if (processedDividends.length > 0) {
-        setDividends(prev => [...prev, ...processedDividends]);
-    }
-
-    // 3. Process Assets (Current Position)
-    // If the import contains explicit Assets snapshot, we update the portfolio.
+    // Process imported assets
     if (newAssets.length > 0) {
         const updatedAssets = [...assets];
         
@@ -139,17 +109,14 @@ export default function App() {
   };
 
   const removeAsset = (id: string) => {
-    // Confirmation handled in UI component
     setAssets(prev => prev.filter(a => a.id !== id));
   };
 
   const removeDividend = (id: string) => {
-    // Confirmation handled in UI component
     setDividends(prev => prev.filter(d => d.id !== id));
   };
 
   const removeTransaction = (id: string) => {
-    // Confirmation handled in UI component
     setTransactions(prev => prev.filter(t => t.id !== id));
   };
 
@@ -209,7 +176,6 @@ export default function App() {
 
   // Helper for manual edit
   const handleEditAsset = (asset: Asset) => {
-     // For future implementation: Open modal to edit Average Price manually
      console.log("Edit requested", asset);
   };
 
@@ -226,7 +192,7 @@ export default function App() {
         <aside className={`fixed md:relative z-30 w-64 h-full bg-slate-900 border-r border-slate-800 transform transition-transform duration-300 ease-in-out ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 flex flex-col`}>
           <div className="p-6 flex items-center justify-between">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-500 bg-clip-text text-transparent">
-              Investi.AI
+              Investi.Web
             </h1>
             <button onClick={() => setSidebarOpen(false)} className="md:hidden text-slate-400">
               <X size={24} />
@@ -252,7 +218,7 @@ export default function App() {
         <main className="flex-1 overflow-hidden w-full flex flex-col bg-slate-900">
           {/* Mobile Header */}
           <header className="md:hidden p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between sticky top-0 z-10">
-            <h1 className="text-xl font-bold text-white">Investi.AI</h1>
+            <h1 className="text-xl font-bold text-white">Investi.Web</h1>
             <button onClick={() => setSidebarOpen(true)} className="text-slate-200">
               <Menu size={24} />
             </button>

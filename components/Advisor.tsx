@@ -1,110 +1,78 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { chatWithAdvisor } from '../services/geminiService';
-import { Asset, Dividend } from '../types';
-import { Send, Bot, User } from 'lucide-react';
+import React from 'react';
+import { BookOpen, TrendingUp, ShieldAlert, Target } from 'lucide-react';
 
 interface AdvisorProps {
-  assets: Asset[];
-  dividends: Dividend[];
+  assets: any[];
+  dividends: any[];
 }
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-export const Advisor: React.FC<AdvisorProps> = ({ assets, dividends }) => {
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Olá! Sou o analista da sua carteira. Posso ajudar a entender seus dividendos, sugerir rebalanceamentos ou explicar conceitos. O que deseja saber?' }
-  ]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-
-    const userMsg = input;
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-    setIsTyping(true);
-
-    try {
-      const response = await chatWithAdvisor(userMsg, { assets, dividends });
-      setMessages(prev => [...prev, { role: 'assistant', content: response || "Sem resposta." }]);
-    } catch (e) {
-      setMessages(prev => [...prev, { role: 'assistant', content: "Erro ao conectar com a IA." }]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
-
+export const Advisor: React.FC<AdvisorProps> = () => {
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] max-h-[800px] bg-slate-800 rounded-xl border border-slate-700 shadow-lg overflow-hidden mt-6">
-      <div className="bg-slate-900/50 p-4 border-b border-slate-700 flex items-center gap-3">
-        <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-400">
-            <Bot size={24} />
+    <div className="flex flex-col bg-slate-800 rounded-xl border border-slate-700 shadow-lg overflow-hidden mt-6 animate-in fade-in">
+      <div className="bg-slate-900/50 p-6 border-b border-slate-700 flex items-center gap-3">
+        <div className="p-3 bg-indigo-500/20 rounded-lg text-indigo-400">
+            <BookOpen size={24} />
         </div>
         <div>
-            <h3 className="text-lg font-bold text-white">Advisor AI</h3>
-            <p className="text-xs text-slate-400">Consultoria baseada na sua carteira real</p>
+            <h3 className="text-xl font-bold text-white">Educação Financeira</h3>
+            <p className="text-sm text-slate-400">Dicas essenciais para manter sua carteira saudável</p>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
-        {messages.map((msg, idx) => (
-          <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`max-w-[80%] rounded-2xl p-4 ${
-              msg.role === 'user' 
-                ? 'bg-emerald-600 text-white rounded-br-none' 
-                : 'bg-slate-700 text-slate-200 rounded-bl-none'
-            }`}>
-              {msg.role === 'assistant' ? (
-                // Simple markdown-ish rendering for line breaks
-                <div className="prose prose-invert prose-sm whitespace-pre-wrap">
-                  {msg.content}
+      <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <div className="space-y-6">
+            <div className="flex gap-4">
+                <div className="p-2 bg-emerald-500/10 rounded-lg h-fit text-emerald-400">
+                    <TrendingUp size={24} />
                 </div>
-              ) : (
-                msg.content
-              )}
+                <div>
+                    <h4 className="text-lg font-bold text-white mb-2">Rebalanceamento Constante</h4>
+                    <p className="text-slate-400 leading-relaxed text-sm">
+                        O segredo não é acertar a "ação da vez", mas manter sua alocação de risco. 
+                        Se ações subiram muito e ocupam uma porcentagem maior que o planejado, 
+                        venda o excedente ou aporte nas categorias que ficaram para trás (como Renda Fixa).
+                    </p>
+                </div>
             </div>
-          </div>
-        ))}
-        {isTyping && (
-          <div className="flex justify-start">
-             <div className="bg-slate-700 p-4 rounded-2xl rounded-bl-none flex items-center gap-2">
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0ms'}}></span>
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '150ms'}}></span>
-                <span className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '300ms'}}></span>
-             </div>
-          </div>
-        )}
-      </div>
 
-      <div className="p-4 bg-slate-900 border-t border-slate-700">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            className="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            placeholder="Ex: Qual setor está dominando minha carteira?"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isTyping}
-            className="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white p-2 rounded-lg transition-colors"
-          >
-            <Send size={20} />
-          </button>
+            <div className="flex gap-4">
+                <div className="p-2 bg-blue-500/10 rounded-lg h-fit text-blue-400">
+                    <Target size={24} />
+                </div>
+                <div>
+                    <h4 className="text-lg font-bold text-white mb-2">O Poder do Longo Prazo</h4>
+                    <p className="text-slate-400 leading-relaxed text-sm">
+                        Juros compostos precisam de tempo. Evite girar a carteira com frequência. 
+                        Menos corretagem e menos impostos significam mais dinheiro rendendo para você no final de 10, 20 anos.
+                    </p>
+                </div>
+            </div>
         </div>
+
+        <div className="space-y-6">
+            <div className="flex gap-4">
+                <div className="p-2 bg-red-500/10 rounded-lg h-fit text-red-400">
+                    <ShieldAlert size={24} />
+                </div>
+                <div>
+                    <h4 className="text-lg font-bold text-white mb-2">Reserva de Emergência</h4>
+                    <p className="text-slate-400 leading-relaxed text-sm">
+                        Antes de investir em Renda Variável, garanta que você possui de 6 a 12 meses do seu custo de vida 
+                        em liquidez diária (CDB, Tesouro Selic). Isso evita que você precise vender ações em momentos de baixa.
+                    </p>
+                </div>
+            </div>
+
+            <div className="bg-slate-900 rounded-xl p-6 border border-slate-700/50">
+                <h5 className="font-bold text-indigo-400 mb-2 text-sm uppercase tracking-wide">Regra de Ouro</h5>
+                <p className="text-white italic text-lg">
+                    "Nunca invista em um negócio que você não consegue entender."
+                </p>
+                <p className="text-right text-slate-500 text-sm mt-2">— Warren Buffett</p>
+            </div>
+        </div>
+
       </div>
     </div>
   );
